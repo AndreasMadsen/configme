@@ -1,6 +1,6 @@
 {
   "name": "configme",
-  "description": "Very simple config search tool",
+  "description": "Simplest possible configuration tool. without conflict - with defaulting!",
   "version": "0.2.0",
   "author": "Andreas Madsen <amwebdk@gmail.com>",
   "scripts": {
