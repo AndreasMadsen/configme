@@ -1,7 +1,7 @@
 {
   "name": "configme",
   "description": "Very simple config search tool",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Andreas Madsen <amwebdk@gmail.com>",
   "scripts": {
     "test": "vows test/simple/* --spec"
@@ -13,6 +13,7 @@
   },
   "keywords": [
     "config",
+    "configuration",
     "json"
   ],
   "devDependencies": {
