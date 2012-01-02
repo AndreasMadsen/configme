@@ -17,7 +17,8 @@
 		path = require('path'),
 		fs = require('fs'),
 		EventEmitter = require('events').EventEmitter;
-	
+		
+	//Error handler
 	function errorHandler(self, error) {
 		if (error) {
 			self.emit('error', error);
@@ -52,6 +53,12 @@
 		//Set values
 		this.name = name;
 		this.path = searchPath || path.dirname(module.filename);
+		
+		//Hide a isProgressing property
+		Object.defineProperty(this, 'isProgressing', {
+			value: false,
+			writable: true
+		});
 		
 		//default behavoure
 		return this;
@@ -192,7 +199,14 @@
 			});
 		});
     }
+    
 	ConfigMe.prototype.search = function () {
+		// Only one configuration function can run
+		if (this.isProgressing === true) {
+			return;
+		}
+		this.isProgressing = true;
+		
 		fileSearch(this, path.normalize(this.path));
 	};
 	
@@ -207,6 +221,12 @@
      */
 	ConfigMe.prototype.manual = function (info) {
 		var self = this;
+		
+		// Only one configuration function can run
+		if (this.isProgressing === true) {
+			return;
+		}
+		this.isProgressing = true;
 		
 		//This should be a filepath
 		if (typeof info === 'string') {
