@@ -18,9 +18,15 @@ var primitives = {
 
 //function returning a parse function
 var hallo = function () {
-	return function (value) {
-		if (value === 'hallo world') {
-			return 'hey internet';
+	return function (source) {
+		if (source === undefined) {
+			return null;
+		}
+		if (source.values === 'function test') {
+			return {
+				scopes: [source, this],
+				value: 'result'
+			};
 		}
 		return null;
 	};
@@ -179,19 +185,22 @@ vows.describe('defaulting configuration').addBatch({
 		topic: function () {
 			var config = new configme('test');
 			config.defaults = {
-				"value" : hallo()
+				"values" : hallo()
 			};
 			config.manual({
-				"value" : "hallo world"
+				"values" : "function test"
 			});
 			return common.eventPipe(config);
 		},
 		
-		'we will send value to function and replace with return content': function (err, info) {
+		'we will replace with return content': function (err, info) {
 			common.isError(err, info);
-			assert.deepEqual(info, {
-				"value" : 'hey internet'
-			});
+			assert.equal(info.values.value, 'result');
+		},
+		
+		'we will send source as argument and scope as this': function (err, info) {
+			common.isError(err, info);
+			assert.deepEqual(info.values.scopes[0], info.values.scopes[1]);
 		}
 	}
 	

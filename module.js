@@ -74,13 +74,21 @@
      * @default Undefined
      * 
      */
-	function defaultProperty(object, defaults) {
+    function getObject(source, deep) {
+		var current = source, i, l;
+		for (i = 0, l = deep.length - 1; i < l; i++) {
+			current = current[deep[i]];
+		}
+		return current;
+	}
+    
+	function defaultProperty(object, defaults, source, deep) {
 		
 		var type, keys, i, propName;
 		
 		//Functions in defaults will take object as an argument and return a parsed object
 		if (defaults instanceof Function) {
-			object = defaults(object);
+			object = defaults.call(getObject(source, deep), source);
 		}
 		
 		//Arrays will be parsed by each item
@@ -98,7 +106,7 @@
 			
 			i = object.length;
 			while (i--) {
-				object[i] = defaultProperty(object[i], defaults[0]);
+				object[i] = defaultProperty(object[i], defaults[0], source, deep.concat([i]));
 			}
 		}
 		
@@ -109,7 +117,7 @@
 			i = keys.length;
 			while (i--) {
 				propName = keys[i];
-				object[propName] = defaultProperty(object[propName], defaults[propName]);
+				object[propName] = defaultProperty(object[propName], defaults[propName], source, deep.concat([propName]));
 			}
 		}
 		
@@ -125,7 +133,7 @@
 			
 			//else we will deep parse an empty object
 			else {
-				object = defaultProperty({}, defaults);
+				object = defaultProperty({}, defaults, source, []);
 			}
 		}
 		
@@ -139,9 +147,12 @@
 			return;
 		}
 		
+		//Copy info
+		var source = info === undefined ? undefined : JSON.parse(JSON.stringify(info));
+		
 		//Parse defaults on to the info object
 		//and emit done
-		self.emit('done', defaultProperty(info, self.defaults));
+		self.emit('done', defaultProperty(info, self.defaults, source, []));
     }
 	ConfigMe.prototype.defaults = undefined;
 	
