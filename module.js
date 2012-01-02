@@ -231,12 +231,6 @@
 						return;
 					}
 					
-					//Check that name is a property
-					if (info[self.name] === undefined) {
-						errorHandler(self, new Error('a ' + self.name + 'property do not exist'));
-						return;
-					}
-					
 					//parse the config object emit done
 					handleData(self, info[self.name]);
 				});
