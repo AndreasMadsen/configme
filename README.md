@@ -115,10 +115,13 @@ config.on('data', function (info) {
 
 #### Functions
 
-So sometimes you wan't more control then you can use functions.
+So sometimes you wan't more control then you can use functions. `.defaults` can be a function
+and a property can contain a function.
 
-The entire `input` object is parsed as the only argument, however the `this` keyword refer to 
-the object that the function exist in.
+A function is executed with the `input` source as its only argument, however the `this` keyword
+refer to  the object that the function exist in. The value that the function return will overwrite
+the `input` value. Note that `source` and `this` are not parsed in any way but contain the original
+values.
 
 ```javascript
 config.defaults = {
@@ -141,6 +144,57 @@ config.on('data', function (info) {
     http: { post: 80, host: 'localhost' },
     https: { port: 443, host: 'localhost' }
     useSSL: true
+  });
+});
+```
+
+#### Arrays
+
+Arrays a very like objects they are parsed by each item. However if the `input` was not an array
+it will be converted intro that, where the first item is the `input`. Also if no value was given
+as `input` the outcome will be an empty array.
+
+```javascript
+config.defaults = {
+  http: [{ port: 80, host: 'localhost' }],
+  https: [{ port: 443, host: 'localhost' }]
+};
+
+//we won't use https
+config.manual({
+  http: [{ port: 80}, { port: 8000}]
+});
+
+config.on('data', function (info) {
+  assert.deepEqual(info, {
+    http: [
+      { post: 80, host: 'localhost' },
+      { post: 8000, host: 'localhost' }
+    ],
+    https: []
+  });
+});
+```
+
+#### Primitives
+
+As you may have guess primitives will only overwrite the `input` value if non is set.
+
+```javascript
+config.defaults = {
+  http: false,
+  https: false
+};
+
+//we won't use https
+config.manual({
+  http: true
+});
+
+config.on('data', function (info) {
+  assert.deepEqual(info, {
+    http: true,
+    https: false
   });
 });
 ```
