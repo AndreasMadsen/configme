@@ -76,6 +76,12 @@
      */
     function getObject(source, deep) {
 		var current = source, i, l;
+		
+		//In case the source don't go deep enoght
+		if  (deep.indexOf(undefined) !== -1) {
+			return undefined;
+		}
+		
 		for (i = 0, l = deep.length - 1; i < l; i++) {
 			current = current[deep[i]];
 		}
@@ -83,7 +89,6 @@
 	}
     
 	function defaultProperty(object, defaults, source, deep) {
-		
 		var type, keys, i, propName;
 		
 		//Functions in defaults will take object as an argument and return a parsed object
@@ -133,7 +138,7 @@
 			
 			//else we will deep parse an empty object
 			else {
-				object = defaultProperty({}, defaults, source, []);
+				object = defaultProperty({}, defaults, source, deep.concat([propName]));
 			}
 		}
 		

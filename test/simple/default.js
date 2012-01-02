@@ -17,12 +17,10 @@ var primitives = {
 };
 
 //function returning a parse function
-var hallo = function () {
+var hallo = function (scope) {
 	return function (source) {
-		if (source === undefined) {
-			return null;
-		}
-		if (source.values === 'function test') {
+		"use strict";
+		if (scope) {
 			return {
 				scopes: [source, this],
 				value: 'result'
@@ -185,7 +183,14 @@ vows.describe('defaulting configuration').addBatch({
 		topic: function () {
 			var config = new configme('test');
 			config.defaults = {
-				"values" : hallo()
+				"values" : hallo('scope'),
+				"layer": {
+					"layer": {
+						"layer" : {
+							"value": hallo('scope')
+						}
+					}
+				}
 			};
 			config.manual({
 				"values" : "function test"
@@ -198,9 +203,27 @@ vows.describe('defaulting configuration').addBatch({
 			assert.equal(info.values.value, 'result');
 		},
 		
+
 		'we will send source as argument and scope as this': function (err, info) {
 			common.isError(err, info);
 			assert.deepEqual(info.values.scopes[0], info.values.scopes[1]);
+		},
+		
+		'we will have this to be undefined, when parent input is given': function (err, info) {
+			common.isError(err, info);
+			assert.deepEqual(info.layer, {
+				layer : {
+					layer : {
+						value: {
+							scopes: [
+								{values: 'function test'},
+								undefined
+							],
+							value: 'result'
+						}
+					}
+				}
+			});
 		}
 	}
 	
