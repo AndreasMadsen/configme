@@ -76,6 +76,75 @@ config.manual({
 
 ### configme.defaults
 
+This property is `undefined` by default, meaning that will the `done` event will just return
+the given data.
+
+To use default values in you configuration object you should set this equal something.
+
+```javascript
+config.defaults = something;
+```
+
+#### Objects
+
+When settings `defaults` equal to an object, each property in the `defaults` object will be checks
+against the `input` object. A property value may also be another object, in that case its
+property will also be parsed and so it continues.
+
+If a property exist in `input` but not in `defaults` it will just be keep as is.
+
+```javascript
+config.defaults = {
+  http: { port: 80, host: 'localhost' },
+  useSSL: false
+};
+
+config.manual({
+  https: { port: 443, host: 'localhost' }
+  useSSL: true
+});
+
+config.on('data', function (info) {
+  assert.deepEqual(info, {
+    http: { post: 80, host: 'localhost' },
+    https: { port: 443, host: 'localhost' }
+    useSSL: true
+  });
+});
+```
+
+#### Functions
+
+So sometimes you wan't more control then you can use functions.
+
+The entire `input` object is parsed as the only argument, however the `this` keyword refer to 
+the object that the function exist in.
+
+```javascript
+config.defaults = {
+  http: { port: 80, host: 'localhost' },
+  https: function (source) {
+    if (this.https === undefined && this.useSSL === true) {
+     return { port: 443, host: 'localhost' };
+    }
+    return value;
+  },
+  useSSL: false
+};
+
+config.manual({
+  useSSL: true
+});
+
+config.on('data', function (info) {
+  assert.deepEqual(info, {
+    http: { post: 80, host: 'localhost' },
+    https: { port: 443, host: 'localhost' }
+    useSSL: true
+  });
+});
+```
+
 ##License
 
 **The software is license under "MIT"**
