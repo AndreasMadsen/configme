@@ -1,0 +1,25 @@
+{
+  "name": "configme",
+  "description": "Very simple config search tool",
+  "version": "0.1.0",
+  "author": "Andreas Madsen <amwebdk@gmail.com>",
+  "scripts": {
+    "test": "vows test/simple/* --spec"
+  },
+  "main": "./module.js",
+  "repository" : {
+    "type": "git",
+    "url": "git://github.com/AndreasMadsen/configme.git"
+  },
+  "keywords": [
+    "config",
+    "json"
+  ],
+  "devDependencies": {
+    "vows"    :  "0.6.x"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.6"
+  }
+}
