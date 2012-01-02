@@ -130,7 +130,7 @@ config.defaults = {
     if (this.https === undefined && this.useSSL === true) {
      return { port: 443, host: 'localhost' };
     }
-    return value;
+    return this.https;
   },
   useSSL: false
 };
@@ -144,6 +144,35 @@ config.on('data', function (info) {
     http: { post: 80, host: 'localhost' },
     https: { port: 443, host: 'localhost' }
     useSSL: true
+  });
+});
+```
+
+Also if the function do not have any parent `this` will be `undefined`. However in non-strict mode
+`undefined` is not supported and `this` will be `global`.
+
+```javascript
+config.defaults = {
+  protocols: {
+    http: function (source) {
+	  "use strict";
+	  //use this === global if "use strict" is not used.
+	  if (this === undefined) {
+	    return { port: 80, host: 'localhost' };
+	  }
+	  return this.http;
+	}
+  }
+};
+
+//Note that protocols is not defined so the function do not have any parrents
+config.manual({});
+
+config.on('data', function (info) {
+  assert.deepEqual(info, {
+  	protocols: {
+      http: { post: 80, host: 'localhost' }
+  	}
   });
 });
 ```
