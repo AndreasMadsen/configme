@@ -27,7 +27,7 @@ When requireing the configme module, a object constructor is returned.
 var configme = require('configme');
 var path = require('path');
 
-var config = new confme('mymodule', path.dirname(module.filename));
+var config = new configme('mymodule', path.dirname(module.filename));
 ```
 
 ### Event: error
