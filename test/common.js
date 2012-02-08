@@ -2,7 +2,7 @@
  * Copyright (c) 2012 Andreas Madsen
  * MIT License
  */
- 
+
 //Directorys
 var path = require('path');
 exports.testDir = path.dirname(module.filename);
@@ -14,20 +14,23 @@ exports.fixtureDir = path.join(exports.testDir, '/fixture/');
 var EventEmitter = require('events').EventEmitter;
 exports.eventPipe = function (config) {
 	var e = new EventEmitter();
-	
+
 	var timeout = setTimeout(function () {
 		e.emit('error', new Error("timeout: error/success was not emitted"));
-	}, 500); 
-	
+	}, 500);
+
 	config.on('error', function (err) {
 		clearTimeout(timeout);
 		e.emit('error', err);
 	});
 	config.on('done', function (info) {
 		clearTimeout(timeout);
-		e.emit('success', info);
+		e.emit('success', {
+			info: info,
+			object: config
+		});
 	});
-	
+
 	return e;
 };
 
@@ -39,13 +42,16 @@ exports.copy = function (obj) {
 //is error
 var assert = require('assert');
 
-exports.isError = function (err, info) {
-	
+exports.isError = function (err, result) {
+
 	//test err argument
 	assert.ifError(err);
-	
-	//test info argument
-	if (info instanceof Error) {
-		throw info;
+
+	//test result and info
+	if (result instanceof Error) {
+		throw result;
+	}
+	if (result.info instanceof Error) {
+		throw result.info;
 	}
 };
