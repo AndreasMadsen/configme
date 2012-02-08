@@ -26,6 +26,11 @@ vows.describe('manual configuration input').addBatch({
 		'we will read file and return object': function (err, result) {
 			common.isError(err, result);
 			assert.deepEqual(result.info, goal);
+        },
+
+        'configPath will point to the given file': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.object.configPath, manualPath);
         }
     },
 	'when useing an object': {
@@ -38,7 +43,12 @@ vows.describe('manual configuration input').addBatch({
 		'we will parse and return': function (err, result) {
 			common.isError(err, result);
 			assert.deepEqual(result.info, goal);
-		}
+		},
+
+        'configPath will point to the given file': function (err, result) {
+			common.isError(err, result);
+			assert.isNull(result.object.configPath);
+        }
 
 	}
 }).exportTo(module);

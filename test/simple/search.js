@@ -15,7 +15,6 @@ var goal = JSON.parse(fs.readFileSync(path.join(common.fixtureDir, '/config.json
 // Create a Test Suite
 vows.describe('search configuration file').addBatch({
 	'when non configuration file exist': {
-
         topic: function () {
 			var config = new configme('test', common.root);
 			config.search();
@@ -25,6 +24,11 @@ vows.describe('search configuration file').addBatch({
 		'we will parse an empty object': function (err, result) {
 			common.isError(err, result);
 			assert.equal(result.info, undefined);
+		},
+
+		'configPath will be false': function (err, result) {
+			common.isError(err, result);
+			assert.isFalse(result.object.configPath);
 		}
 	},
 
@@ -38,6 +42,11 @@ vows.describe('search configuration file').addBatch({
 		'we will send is config object': function (err, result) {
 			common.isError(err, result);
 			assert.deepEqual(result.info, goal);
+        },
+
+        'configPath will be the path to the file': function (err, result) {
+			common.isError(err, result);
+			assert.equal(result.object.configPath, path.join(common.fixtureDir, 'config.json'));
         }
     },
 
@@ -51,18 +60,34 @@ vows.describe('search configuration file').addBatch({
 		'we will skip it': function (err, result) {
 			common.isError(err, result);
 			assert.deepEqual(result.info, goal);
-		}
+		},
 
+		'configPath will point to the correct file': function (err, result) {
+			common.isError(err, result);
+			assert.equal(result.object.configPath, path.join(common.fixtureDir, 'config.json'));
+		}
 	},
 
 	'when a search path isn\'t given': {
-		topic: function() {
+		topic: function () {
 			var config = new configme('test');
-			return config.path;
+			return config;
 		},
 
-		'it should default': function (topic) {
-			assert.equal(topic, path.dirname(common.configmePath));
+		'it should default': function (config) {
+			assert.equal(config.path, path.dirname(common.configmePath));
+		}
+	},
+
+	'when a search path hasn\'t been given yet': {
+		topic: function () {
+			var config = new configme('test');
+			return config;
+		},
+
+		'configPath will be undefined': function (config) {
+			assert.isUndefined(config.configPath);
 		}
 	}
+
 }).exportTo(module);
