@@ -162,6 +162,14 @@
 	ConfigMe.prototype.defaults = undefined;
 
 	/**
+	 * Contain the found path to the configuration file
+	 * @use String|Null|False = configme.configPath;
+	 *
+	 * @return String: path to found file, false: no file was found, Null: did not search
+	 */
+	ConfigMe.prototype.configPath = null;
+
+	/**
      * Start search using provied path property and default missing values
      * @use Undefined = configme.search();
      *
@@ -180,6 +188,7 @@
 
 				//If we hit the bottom without result
 				if (searchPath === nextSearch) {
+					self.configPath = false;
 					//we will parse an empty object
 					handleData(self, undefined);
 					return;
@@ -210,6 +219,7 @@
 					return;
 				}
 
+				self.configPath = fileName;
 				//parse the config object emit done
 				handleData(self, data[self.name]);
 			});
