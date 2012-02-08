@@ -23,9 +23,9 @@ vows.describe('manual configuration input').addBatch({
 			return common.eventPipe(config);
         },
 
-		'we will read file and return object': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, goal);
+		'we will read file and return object': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, goal);
         }
     },
 	'when useing an object': {
@@ -34,10 +34,10 @@ vows.describe('manual configuration input').addBatch({
 			config.manual(goal);
 			return common.eventPipe(config);
 		},
-        
-		'we will parse and return': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, goal);
+
+		'we will parse and return': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, goal);
 		}
 
 	}

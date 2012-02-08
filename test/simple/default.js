@@ -38,13 +38,13 @@ vows.describe('defaulting configuration').addBatch({
 			config.manual(common.copy(primitives));
 			return common.eventPipe(config);
         },
-        
-        'we will just use it as is': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, primitives);
+
+        'we will just use it as is': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, primitives);
         }
 	},
-	
+
 	'when no input is provied': {
 		topic: function () {
 			var config = new configme('test');
@@ -55,21 +55,21 @@ vows.describe('defaulting configuration').addBatch({
 			config.manual(undefined);
 			return common.eventPipe(config);
 		},
-			
-		'we will parse on an empty object': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.values, primitives);
+
+		'we will parse on an empty object': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.values, primitives);
 		},
-		
-		'we will remember to use default fuctions': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, {
+
+		'we will remember to use default fuctions': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, {
 				"values": primitives,
 				"value" : null
 			});
 		}
 	},
-	
+
 	'when both input and defaults exist': {
 		topic: function () {
 			var config = new configme('test');
@@ -81,15 +81,15 @@ vows.describe('defaulting configuration').addBatch({
 			});
 			return common.eventPipe(config);
 		},
-		
-		'we will use input': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, {
+
+		'we will use input': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, {
 				'value': true
 			});
 		}
 	},
-	
+
     'when using primitives in defaults': {
         topic: function () {
 			var config = new configme('test');
@@ -98,12 +98,12 @@ vows.describe('defaulting configuration').addBatch({
 			return common.eventPipe(config);
         },
 
-		'we won\'t deep parse': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, primitives);
+		'we won\'t deep parse': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, primitives);
         }
     },
-    
+
 	'when using Arrays in defaults': {
 		topic: function () {
 			var config = new configme('test');
@@ -118,23 +118,23 @@ vows.describe('defaulting configuration').addBatch({
 			});
 			return common.eventPipe(config);
 		},
-			
-		'we will convert non-arrays to array and parse': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.value, [primitives]);
+
+		'we will convert non-arrays to array and parse': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.value, [primitives]);
         },
-        
-		'we will parse each item and return': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.items, [primitives, primitives]);
+
+		'we will parse each item and return': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.items, [primitives, primitives]);
         },
-        
-		'we will convert missing element to empty arrays': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.miss, []);
+
+		'we will convert missing element to empty arrays': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.miss, []);
         }
 	},
-	
+
 	"when using Objects in defaults": {
 		topic: function () {
 			var config = new configme('test');
@@ -155,20 +155,20 @@ vows.describe('defaulting configuration').addBatch({
 			});
 			return common.eventPipe(config);
 		},
-			
-		'we skip primtive input values': function (err, info) {
-			common.isError(err, info);
-			assert.equal(info.value, false);
+
+		'we skip primtive input values': function (err, result) {
+			common.isError(err, result);
+			assert.equal(result.info.value, false);
 		},
-		
-		'we parse object by each property': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.values, primitives);
+
+		'we parse object by each property': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.values, primitives);
 		},
-		
-		'we will deep parse object by object': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info, {
+
+		'we will deep parse object by object': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info, {
 				values: primitives,
 				deep: {
 					first : false,
@@ -178,7 +178,7 @@ vows.describe('defaulting configuration').addBatch({
 			});
 		}
 	},
-	
+
 	"when using Functions in defaults": {
 		topic: function () {
 			var config = new configme('test');
@@ -197,21 +197,21 @@ vows.describe('defaulting configuration').addBatch({
 			});
 			return common.eventPipe(config);
 		},
-		
-		'we will replace with return content': function (err, info) {
-			common.isError(err, info);
-			assert.equal(info.values.value, 'result');
-		},
-		
 
-		'we will send source as argument and scope as this': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.values.scopes[0], info.values.scopes[1]);
+		'we will replace with return content': function (err, result) {
+			common.isError(err, result);
+			assert.equal(result.info.values.value, 'result');
 		},
-		
-		'we will have this to be undefined, when parent input is given': function (err, info) {
-			common.isError(err, info);
-			assert.deepEqual(info.layer, {
+
+
+		'we will send source as argument and scope as this': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.values.scopes[0], result.info.values.scopes[1]);
+		},
+
+		'we will have this to be undefined, when parent input is given': function (err, result) {
+			common.isError(err, result);
+			assert.deepEqual(result.info.layer, {
 				layer : {
 					layer : {
 						value: {
@@ -226,5 +226,5 @@ vows.describe('defaulting configuration').addBatch({
 			});
 		}
 	}
-	
+
 }).exportTo(module);

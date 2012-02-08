@@ -16,7 +16,10 @@
 	var util = require('util'),
 		path = require('path'),
 		fs = require('fs'),
-		EventEmitter = require('events').EventEmitter;
+		EventEmitter = require('events').EventEmitter,
+
+	// exists
+		doExists = fs.exists || path.exists;
 
 	//Error handler
 	function errorHandler(self, error) {
@@ -181,7 +184,7 @@
 		//Do file exist
 		var fileName = path.join(searchPath, 'config.json'),
 			nextSearch = path.dirname(searchPath);
-		path.exists(fileName, function (exist) {
+		doExists(fileName, function (exist) {
 
 			//File do not exist
 			if (!exist) {
@@ -256,7 +259,7 @@
 
 		//This should be a filepath
 		if (typeof info === 'string') {
-			path.exists(path.normalize(info), function (exist) {
+			doExists(path.normalize(info), function (exist) {
 				if (!exist) {
 					errorHandler(self, new Error('configuration file ' + info + ' do not exist'));
 					return;
