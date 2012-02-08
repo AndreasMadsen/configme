@@ -27,7 +27,7 @@ When requireing the configme module, a object constructor is returned.
 var configme = require('configme');
 var path = require('path');
 
-var config = new confme('mymodule', path.dirname(module.filename));
+var config = new configme('mymodule', path.dirname(module.filename));
 ```
 
 ### Event: error
@@ -115,7 +115,7 @@ config.on('data', function (info) {
 
 #### Functions
 
-So sometimes you wan't more control then you can use functions. `.defaults` can be a function
+So sometimes you want more control then you can use functions. `.defaults` can be a function
 and a property can contain a function.
 
 A function is executed with the `input` source as its only argument, however the `this` keyword
