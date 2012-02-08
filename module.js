@@ -166,11 +166,14 @@
 
 	/**
 	 * Contain the found path to the configuration file
-	 * @use String|Null|False = configme.configPath;
+	 * @use String|Null|False|Undefined = configme.configPath;
 	 *
-	 * @return String: path to found file, false: no file was found, Null: did not search
+	 * @return String: path to found file,
+	 * 		   False: no file was found when searching,
+	 * 		   Null: no path was given,
+	 * 		   Undefined: manual or search has not been called
 	 */
-	ConfigMe.prototype.configPath = null;
+	ConfigMe.prototype.configPath = undefined;
 
 	/**
      * Start search using provied path property and default missing values
@@ -202,6 +205,9 @@
 				return;
 			}
 
+			//set configPath before any error might happen
+			self.configPath = fileName;
+
 			//Read file
 			fs.readFile(fileName, 'utf8', function (err, data) {
 				if (errorHandler(self, err)) {
@@ -222,7 +228,6 @@
 					return;
 				}
 
-				self.configPath = fileName;
 				//parse the config object emit done
 				handleData(self, data[self.name]);
 			});
@@ -230,6 +235,9 @@
     }
 
 	ConfigMe.prototype.search = function () {
+		//set configPath to null since a configuration function has been executed
+		this.configPath = null;
+
 		// Only one configuration function can run
 		if (this.isProgressing === true) {
 			return;
@@ -251,6 +259,9 @@
 	ConfigMe.prototype.manual = function (info) {
 		var self = this;
 
+		//set configPath to null since a configuration function has been executed
+		this.configPath = null;
+
 		// Only one configuration function can run
 		if (this.isProgressing === true) {
 			return;
@@ -259,7 +270,14 @@
 
 		//This should be a filepath
 		if (typeof info === 'string') {
-			doExists(path.normalize(info), function (exist) {
+			//normalize the path before it is used
+			info = path.normalize(info);
+
+			//set configPath before any error might happen
+			self.configPath = info;
+
+			//check that the file exist
+			doExists(info, function (exist) {
 				if (!exist) {
 					errorHandler(self, new Error('configuration file ' + info + ' do not exist'));
 					return;
