@@ -225,6 +225,30 @@ vows.describe('defaulting configuration').addBatch({
 				}
 			});
 		}
+	},
+
+	'when using the parser function': {
+		topic: function () {
+			var defaults = {
+				'value' : [common.copy(primitives)],
+				'items' : [common.copy(primitives)],
+				'miss' : [common.copy(primitives)]
+			};
+			var value = {
+				"value" : {},
+				"items"	: [{}, primitives]
+			};
+			return configme.parser(value, defaults);
+		},
+
+		'it will return a parsed object': function (info) {
+			if (info instanceof Error) {
+				throw info;
+			}
+			assert.deepEqual(info.value, [primitives]);
+			assert.deepEqual(info.items, [primitives, primitives]);
+			assert.deepEqual(info.miss, []);
+		}
 	}
 
 }).exportTo(module);
