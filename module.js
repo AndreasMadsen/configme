@@ -304,4 +304,19 @@
 		}
 	};
 
+
+	/**
+     * simple wrapper to the internal defaulting procedure
+     * @use Object = exports.parser(source, defaults);
+     *
+     * @param	source	  a JSON object containg the properties there should be parsed
+     * @param	defaults  a defaulting object, as usually
+     *
+     * @return	a parsed object
+     */
+	module.exports.parser = function (source, defaults) {
+		var copy = source === undefined ? undefined : JSON.parse(JSON.stringify(source));
+		return defaultProperty(source, defaults, copy, []);
+	};
+
 })();
