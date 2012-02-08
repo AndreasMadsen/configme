@@ -74,6 +74,15 @@ config.manual({
 });
 ```
 
+### configme.configPath
+
+This property contain the path to the configuration file if one was found or given.
+
+However it return other values in some cases:
+
+* Before the `configme.search` or `configme.manual` is used this propery is `undefined`.
+* If no valid file was given or found after calling `configme.search` or `configme.manual` the value is `null`.
+
 ### configme.parser(info, defaults)
 
 This is a manual parser function and should not be used insted of `configme.manual` but in
