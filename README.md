@@ -20,7 +20,7 @@ When requireing the configme module, a object constructor is returned.
 * The required `namespace` argument is a string unique to your module,
   this will often be your module name. It is used when reading `config.json` files.
 * The optional `searchPath` argument, is a string containg an `diretory path`,
-  this will be first folder to search for `config.json` file. 
+  this will be first folder to search for `config.json` file.
   By default this is the location of the configme module folder.
 
 ```javascript
@@ -73,6 +73,11 @@ config.manual({
   awesome: true
 });
 ```
+
+### configme.parser(info, defaults)
+
+This is a manual parser function and should not be used insted of `configme.manual` but in
+`default function` as a subparser. See example under default functions.
 
 ### configme.defaults
 
@@ -127,22 +132,23 @@ values.
 config.defaults = {
   http: { port: 80, host: 'localhost' },
   https: function (source) {
-    if (this.https === undefined && this.useSSL === true) {
-     return { port: 443, host: 'localhost' };
+    if (this.useSSL === true && this.https !== false) {
+     return configme.parser(this.https, { port: 443, host: 'localhost' });
     }
-    return this.https;
+    return false;
   },
   useSSL: false
 };
 
 config.manual({
+  https: {port: 400},
   useSSL: true
 });
 
 config.on('data', function (info) {
   assert.deepEqual(info, {
     http: { post: 80, host: 'localhost' },
-    https: { port: 443, host: 'localhost' }
+    https: { port: 400, host: 'localhost' }
     useSSL: true
   });
 });
@@ -160,7 +166,7 @@ config.defaults = {
 	  if (this === undefined) {
 	    return { port: 80, host: 'localhost' };
 	  }
-	  return this.http;
+	  return configme.parser(this.http, { port: 80, host: 'localhost' });
 	}
   }
 };
@@ -233,17 +239,17 @@ config.on('data', function (info) {
 **The software is license under "MIT"**
 
 > Copyright (c) 2012 Andreas Madsen
-> 
+>
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
 > in the Software without restriction, including without limitation the rights
 > to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 > copies of the Software, and to permit persons to whom the Software is
 > furnished to do so, subject to the following conditions:
-> 
+>
 > The above copyright notice and this permission notice shall be included in
 > all copies or substantial portions of the Software.
-> 
+>
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 > IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 > FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
