@@ -19,7 +19,7 @@
 		EventEmitter = require('events').EventEmitter,
 
 	// exists
-		doExists = fs.exists || path.exists;
+		doExists = fs.exists || fs.exists;
 
 	//Error handler
 	function errorHandler(self, error) {
