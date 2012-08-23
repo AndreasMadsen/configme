@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/AndreasMadsen/configme.png)](http://travis-ci.org/AndreasMadsen/configme)
 #configme
 
 > configme is the simplest possible configuration module.
